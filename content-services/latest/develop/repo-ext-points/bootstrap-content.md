@@ -398,7 +398,7 @@ the site with a special site load patch class as follows:
     <property name="usersBootstrap" ref="siteLoadBootstrap-Users"/>
     <property name="siteService" ref="siteService"/>
     <property name="authorityService" ref="authorityService"/>
-    <property name="behaviorFilter" ref="policyBehaviourFilter"/>
+    <property name="behaviourFilter" ref="policyBehaviourFilter"/>
     <property name="siteName">
         <value>alfresco-kb</value>
     </property>
