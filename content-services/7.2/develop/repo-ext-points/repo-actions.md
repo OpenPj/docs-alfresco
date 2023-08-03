@@ -40,10 +40,23 @@ public class SendAsEmailActionExecuter extends ActionExecuterAbstractBase {
      * The Alfresco Service Registry that gives access to all public content services in Alfresco.
      */
     private ServiceRegistry serviceRegistry;
+    
+    /**
+     * The Alfresco Mail Service implemented using Spring Framework
+     */
+    private JavaMailSender mailService;
 
     public void setServiceRegistry(ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
     }
+    
+    /**
+     * The setter method for the Alfresco Mail Service implemented using Spring Framework
+     * @param mailService
+     */
+    public void setMailService(JavaMailSender mailService) {
+		this.mailService = mailService;
+	}
 
     @Override
     protected void addParameterDefinitions(List<ParameterDefinition> paramList) {
@@ -70,15 +83,11 @@ public class SendAsEmailActionExecuter extends ActionExecuterAbstractBase {
 
             try {
                 // Create mail session
-                Properties mailServerProperties = new Properties();
-                mailServerProperties = System.getProperties();
-                mailServerProperties.put("mail.smtp.host", "localhost");
-                mailServerProperties.put("mail.smtp.port", "2525");
-                Session session = Session.getDefaultInstance(mailServerProperties, null);
+            	Session session = Session.getInstance(System.getProperties(), null);
                 session.setDebug(false);
 
                 // Define message
-                Message message = new MimeMessage(session);
+                MimeMessage message = new MimeMessage(session);
                 String fromAddress = "training@alfresco.com";
                 message.setFrom(new InternetAddress(fromAddress));
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -108,7 +117,7 @@ public class SendAsEmailActionExecuter extends ActionExecuterAbstractBase {
                 message.setContent(multipart);
 
                 // Send mail
-                Transport.send(message);
+                mailService.send(message);
 
                 // Set status on node as "sent via email"
                 Map<QName, Serializable> properties = new HashMap<QName, Serializable>();
